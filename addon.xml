@@ -10,6 +10,6 @@
     <summary>Python class for working with file archives</summary>
     <description>archive_tool is a set of common tools to work with the Kodi libarchive virtual file system</description>
     <platform>all</platform>
-    <license>free</license>
+    <license>GNU GENERAL PUBLIC LICENSE Version 3</license>
   </extension>
 </addon>
