@@ -8,7 +8,7 @@ my_archive = archive_tool.archive_tool(archive_file = 'myfile.zip',directory_out
 
 file_listing = my_archive.list_all() #Lists all files in the archive
 
-file_listing = my_archive.stat_all() #Dict of all files in the archive containing fullpath, filename, file size (extracted)
+file_listing_dict = my_archive.stat_all() #Dict of all files in the archive containing fullpath, filename, file size (extracted)
 
 files_extracted, success_of_extraction = my_archive.extract()  #Extracts all files to directory_out, returns list of files extracted and True/False for extraction success.  Defaults to extract all files in the archive.
 
