@@ -1,4 +1,5 @@
-archive_tool is a set of common tools to work with the Kodi libarchive virtual file system
+archive_tool is a set of common tools to work with the Kodi libarchive virtual file system.  This should work with any of the following archive types:
+.7z, .tar.gz, .tar.bz2, .tar.xz, .zip, .rar, .tgz, .tbz2, .gz, .bz2, .xz, .cbr
 
 Simplest usage example:
 ```
