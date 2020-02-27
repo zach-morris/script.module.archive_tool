@@ -1,5 +1,5 @@
 
-Archive tool for kodi
+archive_tool is a set of common python functions to work with the Kodi archive virtual file system (vfs) binary addons such as vfs.libarchive and vfs.rar
 
 Simplest usage example:
 ```
