@@ -27,8 +27,7 @@ my_archive.files_to_extract([file_listing[0],file_listing[3]]) #Updates the curr
 ```
 Use of vfs.rar 3.1 or greater (Kodi v19 or greater):
 
-Almost all archives can be handled by vfs.libarchive.  The only exception found at this point are solid RAR archives (see issue [here](https://github.com/xbmc/vfs.libarchive/issues/35)):
-https://www.winrar-france.fr/winrar_instructions_for_use/source/html/HELPArcSolid.htm
+Almost all archives can be handled by vfs.libarchive.  The only exception found at this point are [solid RAR archives](https://www.winrar-france.fr/winrar_instructions_for_use/source/html/HELPArcSolid.htm) (see issue [here](https://github.com/xbmc/vfs.libarchive/issues/35))
 
 You can set archive_tool to use vfs.rar in these cases with
 ```
