@@ -4,7 +4,7 @@ Archive tool for kodi
 Simplest usage example:
 import archive_tool
 
-my_archive = archive_tool.archive_tool(archive_file = 'myfile.zip',directory_out = '/my/output_directory/') #Current archive object
+my_archive = archive_tool.archive_tool(archive_file = 'myfile.zip',directory_out = '/my/output_directory/') #Current archive object using vfs.libarchive
 
 file_listing = my_archive.list_all() #Lists all files in the archive
 
@@ -24,9 +24,17 @@ my_archive.directory_out('/my/output_directory2/') #Updates the currently set ou
 
 my_archive.files_to_extract([file_listing[0],file_listing[3]]) #Updates the currently set file(s) to extract from the archive
 
+Use of vfs.rar:
+
+Almost all archives can be handled by vfs.libarchive.  The only exception found at this point are solid RAR archives:
+https://www.winrar-france.fr/winrar_instructions_for_use/source/html/HELPArcSolid.htm
+
+You can set archive_tool to use vfs.rar in these cases with
+my_archive = archive_tool.archive_tool(archive_file = 'myfile.rar',directory_out = '/my/output_directory/', use_vfs_rar=True) #Current archive object using vfs.rar instead of vfs.libarchive
+
 '''
 
-from kodi_six import xbmc, xbmcgui, xbmcvfs, xbmcaddon
+from kodi_six import xbmc, xbmcvfs
 try:
 	from urllib import quote_plus as url_quote #Python 2
 except:
@@ -35,11 +43,11 @@ import os
 
 class archive_tool(object):
 
-	def __init__(self, archive_file=None, files_to_extract=None, directory_out=None):
+	def __init__(self, archive_file=None, files_to_extract=None, directory_out=None,use_vfs_rar=False):
 		if archive_file is not None:
 			if type(archive_file) is str or type(archive_file) is unicode:
 				if xbmcvfs.exists(archive_file):
-					if any([archive_file.lower().endswith(x) for x in '.7z|.tar.gz|.tar.bz2|.tar.xz|.zip|.rar|.tgz|.tbz2|.gz|.bz2|.xz|.cbr'.split('|')]):
+					if any([archive_file.lower().endswith(x) for x in '.7z|.tar.gz|.tar.bz2|.tar.xz|.zip|.rar|.tgz|.tbz2|.gz|.bz2|.xz|.cbr|.001'.split('|')]):
 						self.archive_file = archive_file
 					else:
 						xbmc.log(msg='archive_tool error:  file type %(current_file_type)s is not a supported archive type' % {'current_file_type': os.path.splitext(archive_file)[-1]}, level=xbmc.LOGERROR)
@@ -70,6 +78,16 @@ class archive_tool(object):
 				self.files_to_extract = None
 		else:
 			self.files_to_extract = None
+		if use_vfs_rar:
+			if any([archive_file.lower().endswith(x) for x in '.rar|.cbr|.001'.split('|')]):
+				xbmc.log(msg='archive_tool: set to use vfs.rar', level=xbmc.LOGDEBUG)
+				self.use_vfs_rar = True
+			else:
+				xbmc.log(msg='archive_tool error:  Cannot use vfs.rar for file type %(current_file_type)s, defaulting to vfs.libarchive' % {'current_file_type': os.path.splitext(archive_file)[-1]}, level=xbmc.LOGERROR)
+				self.use_vfs_rar = False
+		else:
+			xbmc.log(msg='archive_tool: set to use vfs.libarchive', level=xbmc.LOGDEBUG)
+			self.use_vfs_rar = False
 
 	def archive_file(self, archive_file=None):
 		if archive_file is not None:
@@ -141,12 +159,16 @@ class archive_tool(object):
 			else:
 				directory_to = os.path.join(xbmc.translatePath(current_directory_out),'')
 			
-			if 'archive://' in current_archive_file:
+			if 'archive://' in current_archive_file or 'rar://' in current_archive_file:
 				archive_path = current_archive_file
 			else:
-				archive_path = 'archive://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
+				if self.use_vfs_rar:
+					archive_path = 'rar://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
+				else:
+					archive_path = 'archive://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
 			
 			dirs_in_archive, files_in_archive = xbmcvfs.listdir(archive_path)
+
 			for ff in files_in_archive:
 				file_from = os.path.join(archive_path,ff).replace('\\','/') #Windows unexpectedly requires a forward slash in the path
 				if extract_all or file_from in files_to_extract:
@@ -187,10 +209,13 @@ class archive_tool(object):
 			else:
 				directory_to = os.path.join(xbmc.translatePath(current_directory_out),'')
 			
-			if 'archive://' in current_archive_file:
+			if 'archive://' in current_archive_file or 'rar://' in current_archive_file:
 				archive_path = current_archive_file
 			else:
-				archive_path = 'archive://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
+				if self.use_vfs_rar:
+					archive_path = 'rar://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
+				else:
+					archive_path = 'archive://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
 			
 			dirs_in_archive, files_in_archive = xbmcvfs.listdir(archive_path)
 			for ff in files_in_archive:
@@ -207,11 +232,14 @@ class archive_tool(object):
 			current_archive_file = self.archive_file
 		
 		if current_archive_file is not None:
-			if 'archive://' in current_archive_file:
+			if 'archive://' in current_archive_file or 'rar://' in current_archive_file:
 				archive_path = current_archive_file
 			else:
-				archive_path = 'archive://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
-			
+				if self.use_vfs_rar:
+					archive_path = 'rar://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
+				else:
+					archive_path = 'archive://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
+
 			files_in_archive = self.list_all()
 			for ff in files_in_archive:
 				files_out.append({'fullpath':ff,'filename':os.path.split(ff)[-1],'size':int(xbmcvfs.File(ff).size())})
