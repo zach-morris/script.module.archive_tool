@@ -31,5 +31,9 @@ Almost all archives can be handled by vfs.libarchive.  The only exception found 
 
 You can set archive_tool to use vfs.rar in these cases with
 ```
+xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.SetAddonEnabled","params":{"addonid": "vfs.libarchive", "enabled": false} }') #Temporarily disable vfs.libarchive
+
 my_archive = archive_tool.archive_tool(archive_file = 'myfile.rar',directory_out = '/my/output_directory/', use_vfs_rar=True) #Current archive object using vfs.rar instead of vfs.libarchive
+
+xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.SetAddonEnabled","params":{"addonid": "vfs.libarchive", "enabled": true} }') #re-enable vfs.libarchive
 ```
