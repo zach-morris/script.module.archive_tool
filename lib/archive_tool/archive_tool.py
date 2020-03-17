@@ -39,21 +39,25 @@ try:
 	from urllib import quote_plus as url_quote #Python 2
 except:
 	from urllib.parse import quote_plus as url_quote #Python 3
-import os
+import os, json
 
 class archive_tool(object):
 
 	def __init__(self, archive_file=None, files_to_extract=None, directory_out=None,use_vfs_rar=False):
 		if archive_file is not None:
 			if type(archive_file) is str or type(archive_file) is unicode:
-				if xbmcvfs.exists(archive_file):
-					if any([archive_file.lower().endswith(x) for x in '.7z|.tar.gz|.tar.bz2|.tar.xz|.zip|.rar|.tgz|.tbz2|.gz|.bz2|.xz|.cbr|.001'.split('|')]):
-						self.archive_file = archive_file
+				if len([x for x in json.loads(xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.GetAddons","params":{"type":"kodi.vfs", "enabled": true}, "id": "1"}')).get('result').get('addons') if x is not None and (x.get('addonid')=='vfs.libarchive' or x.get('addonid')=='vfs.rar')])>0:
+					if xbmcvfs.exists(archive_file):
+						if any([archive_file.lower().endswith(x) for x in '.7z|.tar.gz|.tar.bz2|.tar.xz|.zip|.iso|.tar|.rar|.tgz|.tbz2|.gz|.bz2|.xz|.cbr|.001'.split('|')]):
+							self.archive_file = archive_file
+						else:
+							xbmc.log(msg='archive_tool error:  file type %(current_file_type)s is not a supported archive type' % {'current_file_type': os.path.splitext(archive_file)[-1]}, level=xbmc.LOGERROR)
+							self.archive_file = None
 					else:
-						xbmc.log(msg='archive_tool error:  file type %(current_file_type)s is not a supported archive type' % {'current_file_type': os.path.splitext(archive_file)[-1]}, level=xbmc.LOGERROR)
+						xbmc.log(msg='archive_tool error:  archive_file could not be found', level=xbmc.LOGERROR)
 						self.archive_file = None
 				else:
-					xbmc.log(msg='archive_tool error:  archive_file could not be found', level=xbmc.LOGERROR)
+					xbmc.log(msg='archive_tool error:  vfs.libarchive and vfs.rar are not installed or enabled', level=xbmc.LOGERROR)
 					self.archive_file = None
 			else:
 				xbmc.log(msg='archive_tool error:  archive_file must be string or unicode', level=xbmc.LOGERROR)
@@ -79,11 +83,15 @@ class archive_tool(object):
 		else:
 			self.files_to_extract = None
 		if use_vfs_rar:
-			if any([archive_file.lower().endswith(x) for x in '.rar|.cbr|.001'.split('|')]):
-				xbmc.log(msg='archive_tool: set to use vfs.rar', level=xbmc.LOGDEBUG)
-				self.use_vfs_rar = True
+			if len([x for x in json.loads(xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.GetAddons","params":{"type":"kodi.vfs", "enabled": true}, "id": "1"}')).get('result').get('addons') if x is not None and x.get('addonid')=='vfs.rar'])>0:
+				if any([archive_file.lower().endswith(x) for x in '.rar|.cbr|.001'.split('|')]):
+					xbmc.log(msg='archive_tool: set to use vfs.rar', level=xbmc.LOGDEBUG)
+					self.use_vfs_rar = True
+				else:
+					xbmc.log(msg='archive_tool error:  Cannot use vfs.rar for file type %(current_file_type)s, defaulting to vfs.libarchive' % {'current_file_type': os.path.splitext(archive_file)[-1]}, level=xbmc.LOGERROR)
+					self.use_vfs_rar = False
 			else:
-				xbmc.log(msg='archive_tool error:  Cannot use vfs.rar for file type %(current_file_type)s, defaulting to vfs.libarchive' % {'current_file_type': os.path.splitext(archive_file)[-1]}, level=xbmc.LOGERROR)
+				xbmc.log(msg='archive_tool error:  vfs.rar was not found to be installed or is not enabled, defaulting to vfs.libarchive', level=xbmc.LOGERROR)
 				self.use_vfs_rar = False
 		else:
 			xbmc.log(msg='archive_tool: set to use vfs.libarchive', level=xbmc.LOGDEBUG)
@@ -167,6 +175,10 @@ class archive_tool(object):
 				else:
 					archive_path = 'archive://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
 			
+			#Temporarily disable vfs.libarchive to force use of vfs.rar
+			# if self.use_vfs_rar:
+			# 	xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.SetAddonEnabled","params":{"addonid": "vfs.libarchive", "enabled": false} }')
+
 			dirs_in_archive, files_in_archive = xbmcvfs.listdir(archive_path)
 
 			for ff in files_in_archive:
@@ -193,6 +205,11 @@ class archive_tool(object):
 				else:
 					overall_success = False
 					xbmc.log(msg='archive_tool error:  Unable to create the archive subdirectory %(dir_from)s in the archive %(archive_file)s' % {'dir_from': os.path.join(xbmc.translatePath(directory_to),dd),'archive_file':current_archive_file}, level=xbmc.LOGERROR)
+		
+			#Re-enable vfs.libarchive
+			# if self.use_vfs_rar:
+			# 	xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.SetAddonEnabled","params":{"addonid": "vfs.libarchive", "enabled": true} }')
+
 		return files_out, overall_success
 
 	def list_all(self,current_archive_file=None,current_directory_out=None):

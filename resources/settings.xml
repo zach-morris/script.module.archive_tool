@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+	<category label="Module Test">
+		<setting visible="true" label="Run Archive Test" type="action" option="close" action="RunScript(special://home/addons/script.module.archive_tool/lib/archive_tool/run_test.py)"/>
+	</category>
+</settings>
