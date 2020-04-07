@@ -26,18 +26,21 @@ my_archive.directory_out('/my/output_directory2/') #Updates the currently set ou
 my_archive.files_to_extract([file_listing[0],file_listing[3]]) #Updates the currently set file(s) to extract from the archive
 ```
 
-~~Use of vfs.rar 3.1 or greater (Kodi v19 or greater):~~
+Use of vfs.rar 3.1 or greater (Kodi v19 or greater):
 
 Edit:  Currently crashes Kodi, so not recommended
 
-~~Almost all archives can be handled by vfs.libarchive.  The only exception found at this point are [solid RAR archives](https://www.winrar-france.fr/winrar_instructions_for_use/source/html/HELPArcSolid.htm) (see issue [here](https://github.com/xbmc/vfs.libarchive/issues/35))~~
+Almost all archives can be handled by vfs.libarchive.  The only exception found at this point are [solid RAR archives](https://www.winrar-france.fr/winrar_instructions_for_use/source/html/HELPArcSolid.htm) (see issue [here](https://github.com/xbmc/vfs.libarchive/issues/35))
 
-~~You can set archive_tool to use vfs.rar in these cases with~~
+You can set archive_tool to use vfs.rar in these cases with
 
 ```
+#Sleep call is currently requried to avoid crashing Kodi
+xbmc.sleep(1000)
 xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.SetAddonEnabled","params":{"addonid": "vfs.libarchive", "enabled": false} }') #Temporarily disable vfs.libarchive
-
+xbmc.sleep(1000)
 my_archive = archive_tool.archive_tool(archive_file = 'myfile.rar',directory_out = '/my/output_directory/', use_vfs_rar=True) #Current archive object using vfs.rar instead of vfs.libarchive
 
 xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.SetAddonEnabled","params":{"addonid": "vfs.libarchive", "enabled": true} }') #re-enable vfs.libarchive
+xbmc.sleep(1000)
 ```
