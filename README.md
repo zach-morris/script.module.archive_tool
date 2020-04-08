@@ -48,7 +48,7 @@ xbmc.sleep(1000)
 
 To test archive types, there is a test script for this module which can be run from the addon settings.  In Kodi, go to System>Addons>Manage Dependancies>archive_tool>Configure>Run Archive Test
 
-That should return:
+That should return some debug information into your log which describes if each archive type could be extracted:
 ```
 DEBUG: archive_tool:  Test started.
 DEBUG: archive_tool:  Testing ...test.zip
