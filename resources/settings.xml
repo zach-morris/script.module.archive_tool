@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
 	<category label="Module Test">
-		<setting visible="true" label="Run Archive Test" type="action" option="close" action="RunScript(special://home/addons/script.module.archive_tool/lib/archive_tool/run_test.py)"/>
+		<setting id="archive_tool_file" type="file" label="Select File"/>
+		<setting id="archive_tool_folder" type="folder" label="Select Extraction Folder"/>
+		<setting id="archive_tool_vfs_type" type="select" label="Select VFS" values="libarchive|rar" default="libarchive"/>
+		<setting visible="true" label="Run Archive Test" type="action" option="close" action="RunScript(special://home/addons/script.module.archive_tool/lib/archive_tool/run_archive_tool_test.py)"/>
 	</category>
 </settings>

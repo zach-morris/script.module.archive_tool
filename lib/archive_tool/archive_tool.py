@@ -175,10 +175,6 @@ class archive_tool(object):
 				else:
 					archive_path = 'archive://%(archive_file)s' % {'archive_file': url_quote(xbmc.translatePath(current_archive_file))}
 			
-			#Temporarily disable vfs.libarchive to force use of vfs.rar
-			# if self.use_vfs_rar:
-			# 	xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.SetAddonEnabled","params":{"addonid": "vfs.libarchive", "enabled": false} }')
-
 			dirs_in_archive, files_in_archive = xbmcvfs.listdir(archive_path)
 
 			for ff in files_in_archive:
@@ -205,10 +201,9 @@ class archive_tool(object):
 				else:
 					overall_success = False
 					xbmc.log(msg='archive_tool error:  Unable to create the archive subdirectory %(dir_from)s in the archive %(archive_file)s' % {'dir_from': os.path.join(xbmc.translatePath(directory_to),dd),'archive_file':current_archive_file}, level=xbmc.LOGERROR)
-		
-			#Re-enable vfs.libarchive
-			# if self.use_vfs_rar:
-			# 	xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.SetAddonEnabled","params":{"addonid": "vfs.libarchive", "enabled": true} }')
+		else:
+			xbmc.log(msg='archive_tool error:  The current archive file is not valid', level=xbmc.LOGERROR)
+			overall_success = False
 
 		return files_out, overall_success
 
