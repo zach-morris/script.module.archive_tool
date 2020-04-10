@@ -1,7 +1,7 @@
 # Kodi Media Center language file
-# Addon Name: script.module.archive_tool
+# Addon Name: archive_tool
 # Addon id: script.module.archive_tool
-# Addon Provider: ZachMorris
+# Addon Provider: Zach Morris
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: zachmorris\n"

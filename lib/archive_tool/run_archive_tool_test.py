@@ -1,7 +1,7 @@
 from kodi_six import xbmc, xbmcaddon, xbmcgui, xbmcvfs
 from kodi_six.utils import py2_encode, py2_decode
 import os
-import archive_tool
+from . import archive_tool
 
 
 WIN = xbmcgui.Window(10000)
