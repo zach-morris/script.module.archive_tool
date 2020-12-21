@@ -8,8 +8,10 @@
   </requires>
   <extension point="xbmc.python.module" library="lib" />
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Python class for working with file archives</summary>
-    <description lang="en">archive_tool is a set of common tools to work with the Kodi libarchive virtual file system</description>
+    <summary lang="en_GB">Python class for working with file archives</summary>
+    <description lang="en_GB">archive_tool is a set of common tools to work with the Kodi libarchive virtual file system</description>
+    <summary lang="el_GR">Κλάση Python για διαχείριση τόμων αρχείων</summary>
+    <description lang="el_GR">Το archive_tool είναι ένα σετ από κοινά εργαλεία ώστε να διαχειριστεί το εικονικό σύστημα αρχείων libarchive</description>
     <platform>all</platform>
     <assets>
       <icon>icon.png</icon>
