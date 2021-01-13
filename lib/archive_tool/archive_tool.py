@@ -46,7 +46,7 @@ class archive_tool(object):
 		self.show_progress = show_progress
 		self.dialog_sleep_time = 500
 		if archive_file is not None:
-			if type(archive_file) is str or type(archive_file) is unicode:
+			if isinstance(archive_file,str):
 				if len([x for x in json.loads(xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.GetAddons","params":{"type":"kodi.vfs", "enabled": true}, "id": "1"}')).get('result').get('addons') if x is not None and (x.get('addonid')=='vfs.libarchive' or x.get('addonid')=='vfs.rar')])>0:
 					if xbmcvfs.exists(archive_file):
 						if any([archive_file.lower().endswith(x) for x in self.all_archive_filetypes]):
@@ -61,25 +61,25 @@ class archive_tool(object):
 					xbmc.log(msg='archive_tool error:  vfs.libarchive and vfs.rar are not installed or enabled', level=xbmc.LOGERROR)
 					self.archive_file = None
 			else:
-				xbmc.log(msg='archive_tool error:  archive_file must be string or unicode', level=xbmc.LOGERROR)
+				xbmc.log(msg='archive_tool error:  archive_file must be string', level=xbmc.LOGERROR)
 				self.archive_file = None
 		else:
 			self.archive_file = None
 		if directory_out is not None:
-			if type(directory_out) is str or type(directory_out) is unicode:
+			if isinstance(directory_out,str):
 				self.directory_out = directory_out
 			else:
-				xbmc.log(msg='archive_tool error:  directory_out must be string or unicode', level=xbmc.LOGERROR)
+				xbmc.log(msg='archive_tool error:  directory_out must be string', level=xbmc.LOGERROR)
 				self.directory_out = None
 		else:
 			self.directory_out = None
 		if files_to_extract is not None:
-			if type(files_to_extract) is list:
+			if isinstance(files_to_extract,list):
 				self.files_to_extract = files_to_extract
-			elif type(files_to_extract) is str or type(files_to_extract) is unicode:
+			elif isinstance(files_to_extract,str):
 				self.files_to_extract = [files_to_extract]
 			else:
-				xbmc.log(msg='archive_tool error:  files_to_extract must be list,string or unicode', level=xbmc.LOGERROR)
+				xbmc.log(msg='archive_tool error:  files_to_extract must be list or string', level=xbmc.LOGERROR)
 				self.files_to_extract = None
 		else:
 			self.files_to_extract = None
@@ -97,7 +97,7 @@ class archive_tool(object):
 
 	def archive_file(self, archive_file=None):
 		if archive_file is not None:
-			if type(archive_file) is str or type(archive_file) is unicode:
+			if isinstance(archive_file,str):
 				if xbmcvfs.exists(archive_file):
 					if any([archive_file.lower().endswith(x) for x in self.all_archive_filetypes]):
 						self.archive_file = archive_file
@@ -109,7 +109,7 @@ class archive_tool(object):
 					xbmc.log(msg='archive_tool error:  archive_file could not be found', level=xbmc.LOGERROR)
 					self.archive_file = None
 			else:
-				xbmc.log(msg='archive_tool error:  archive_file must be string or unicode', level=xbmc.LOGERROR)
+				xbmc.log(msg='archive_tool error:  archive_file must be string', level=xbmc.LOGERROR)
 				self.archive_file = None
 		else:
 			self.archive_file = None
@@ -123,25 +123,25 @@ class archive_tool(object):
 
 	def directory_out(self, directory_out=None):
 		if directory_out is not None:
-			if type(directory_out) is str or type(directory_out) is unicode:
+			if isinstance(directory_out,str):
 				self.directory_out = directory_out
 				xbmc.log(msg='archive_tool: Set output directory to %(directory_out)s' % {'directory_out': directory_out}, level=xbmc.LOGDEBUG)
 			else:
-				xbmc.log(msg='archive_tool error:  directory_out must be string or unicode', level=xbmc.LOGERROR)
+				xbmc.log(msg='archive_tool error:  directory_out must be string', level=xbmc.LOGERROR)
 				self.directory_out = None
 		else:
 			self.directory_out = None
 
 	def files_to_extract(self, files_to_extract=None):
 		if files_to_extract is not None:
-			if type(files_to_extract) is list:
+			if isinstance(files_to_extract,list):
 				self.files_to_extract = files_to_extract
 				xbmc.log(msg='archive_tool: Set files to extract to %(files_to_extract)s' % {'files_to_extract': self.files_to_extract}, level=xbmc.LOGDEBUG)
-			elif type(files_to_extract) is str or type(files_to_extract) is unicode:
+			elif isinstance(files_to_extract,str):
 				self.files_to_extract = [files_to_extract]
 				xbmc.log(msg='archive_tool: Set files to extract to %(files_to_extract)s' % {'files_to_extract': self.files_to_extract}, level=xbmc.LOGDEBUG)
 			else:
-				xbmc.log(msg='archive_tool error:  files_to_extract must be list,string or unicode', level=xbmc.LOGERROR)
+				xbmc.log(msg='archive_tool error:  files_to_extract must be list or string', level=xbmc.LOGERROR)
 				self.files_to_extract = None
 		else:
 			self.files_to_extract = None
@@ -164,7 +164,7 @@ class archive_tool(object):
 			else:
 				files_to_extract = self.files_to_extract
 		else:
-			if type(files_to_extract) is list and len(files_to_extract) > 0:
+			if isinstance(files_to_extract,list) and len(files_to_extract) > 0:
 				extract_all = False #Override default extract_all if files_to_extract is populated
 
 		if current_archive_file is not None:
