@@ -31,7 +31,7 @@ Use of vfs.rar:
 Almost all archives can be handled by vfs.libarchive.  The only exception at this point are RAR archives which are handled by vfs.rar
 '''
 
-from kodi_six import xbmc, xbmcvfs, xbmcgui
+import xbmc, xbmcvfs, xbmcgui
 try:
 	from urllib import quote_plus as url_quote #Python 2
 except:

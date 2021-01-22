@@ -1,5 +1,4 @@
-from kodi_six import xbmc, xbmcaddon, xbmcgui, xbmcvfs
-from kodi_six.utils import py2_encode, py2_decode
+import xbmc, xbmcaddon, xbmcgui, xbmcvfs
 import os
 import archive_tool
 
