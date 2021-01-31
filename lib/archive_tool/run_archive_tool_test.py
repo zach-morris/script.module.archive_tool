@@ -12,12 +12,15 @@ if not WIN.getProperty('archive_tool.script_started'):
 	addon_handle = xbmcaddon.Addon(id='%(addon_name)s' % {'addon_name':addon_name})
 	current_file = os.path.join(xbmcvfs.translatePath(addon_handle.getSetting(id='archive_tool_file')))
 	current_folder = os.path.join(xbmcvfs.translatePath(addon_handle.getSetting(id='archive_tool_folder')))
+	flatten_archive = False
+	if addon_handle.getSetting(id='archive_tool_flatten_archive') and int(addon_handle.getSetting(id='archive_tool_flatten_archive')):
+		flatten_archive = True
 	if xbmcvfs.exists(current_file):
 		if xbmcvfs.exists(os.path.join(current_folder,'')):
 			xbmc.log(msg='archive_tool:  Current file selected %(current_file)s' % {'current_file':current_file}, level=xbmc.LOGDEBUG)
 			xbmc.log(msg='archive_tool:  Current folder selected %(current_folder)s' % {'current_folder':current_folder}, level=xbmc.LOGDEBUG)
 			try:
-				my_archive = archive_tool.archive_tool(archive_file = current_file,directory_out = current_folder, show_progress=True)
+				my_archive = archive_tool.archive_tool(archive_file = current_file,directory_out = current_folder, show_progress=True, flatten_archive=flatten_archive)
 				file_listing = my_archive.list_all() #Lists all files in the archive
 				xbmc.log(msg='archive_tool:  File listing:\n%(file_listing)s' % {'file_listing':'\n'.join(file_listing)}, level=xbmc.LOGDEBUG)
 				stat_listing = my_archive.stat_all() #Dict of all files in the archive containing fullpath, filename, file size (extracted)

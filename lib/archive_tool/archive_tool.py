@@ -18,6 +18,8 @@ files_extracted, success_of_extraction = my_archive.extract(files_to_extract=fil
 
 Additional functions:
 
+my_archive = archive_tool.archive_tool(archive_file = 'myfile.zip',directory_out = '/my/output_directory/', flatten_archive=True) #Flatten files when copying from archive, removing folder structure (default is False)
+
 my_archive.archive_file('myfile2.zip') #Updates the currently set archive
 
 my_archive.directory_out('/my/output_directory2/') #Updates the currently set output directory
@@ -40,7 +42,7 @@ import os, json
 
 class archive_tool(object):
 
-	def __init__(self, archive_file=None, files_to_extract=None, directory_out=None, show_progress = False):
+	def __init__(self, archive_file=None, files_to_extract=None, flatten_archive=False, directory_out=None, show_progress = False):
 		self.rar_filetypes = '.rar|.001|.cbr'.split('|') #https://github.com/xbmc/vfs.rar/blob/Matrix/vfs.rar/addon.xml.in#L11
 		self.all_archive_filetypes = '.7z|.tar.gz|.tar.bz2|.tar.xz|.zip|.tgz|.tbz2|.gz|.bz2|.xz|.tar|.iso'.split('|')+self.rar_filetypes #https://github.com/xbmc/vfs.libarchive/blob/Matrix/vfs.libarchive/addon.xml.in#L13 + RAR filetypes
 		self.show_progress = show_progress
@@ -73,6 +75,7 @@ class archive_tool(object):
 				self.directory_out = None
 		else:
 			self.directory_out = None
+		self.flatten_archive = flatten_archive
 		if files_to_extract is not None:
 			if isinstance(files_to_extract,list):
 				self.files_to_extract = files_to_extract
@@ -131,6 +134,12 @@ class archive_tool(object):
 				self.directory_out = None
 		else:
 			self.directory_out = None
+
+	def flatten_archive(self,value_in):
+		if isinstance(value_in,bool):
+			self.flatten_archive = value_in
+		else:
+			self.flatten_archive = False
 
 	def files_to_extract(self, files_to_extract=None):
 		if files_to_extract is not None:
@@ -200,9 +209,13 @@ class archive_tool(object):
 				else:
 					xbmc.log(msg='archive_tool: The file %(ff)s from archive %(archive_file)s was not listed for extraction, so it will be skipped' % {'ff': file_from,'archive_file':current_archive_file}, level=xbmc.LOGDEBUG)
 			for dd in dirs_in_archive:
-				if xbmcvfs.mkdir(os.path.join(xbmcvfs.translatePath(directory_to),dd)): #Make the archive directory in the directory_to
-					xbmc.log(msg='archive_tool: Created folder %(dd)s for archive %(archive_file)s' % {'dd': os.path.join(xbmcvfs.translatePath(directory_to),dd,''),'archive_file':current_archive_file}, level=xbmc.LOGDEBUG)
-					files_out2, success2 = self.extract(current_archive_file=os.path.join(archive_path,dd,'').replace('\\','/'),current_directory_out=os.path.join(directory_to,dd))
+				if self.flatten_archive:
+					dd_copy = ''
+				else:
+					dd_copy = dd
+				if xbmcvfs.exists(os.path.join(xbmcvfs.translatePath(directory_to),dd_copy)) or xbmcvfs.mkdir(os.path.join(xbmcvfs.translatePath(directory_to),dd_copy)): #Make the archive directory in the directory_to
+					xbmc.log(msg='archive_tool: Created folder %(dd)s for archive %(archive_file)s' % {'dd': os.path.join(xbmcvfs.translatePath(directory_to),dd_copy,''),'archive_file':current_archive_file}, level=xbmc.LOGDEBUG)
+					files_out2, success2 = self.extract(current_archive_file=os.path.join(archive_path,dd,'').replace('\\','/'),current_directory_out=os.path.join(directory_to,dd_copy))
 					if success2:
 						files_out = files_out + files_out2 #Append the files in the subdir to the list of extracted files
 					else:

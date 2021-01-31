@@ -31,3 +31,15 @@ msgstr "Run Archive Test"
 msgctxt "#30006"
 msgid "Archive Test"
 msgstr "Archive Test"
+
+msgctxt "#30007"
+msgid "Flatten Archive"
+msgstr "Flatten Archive"
+
+msgctxt "#30008"
+msgid "False"
+msgstr "False""
+
+msgctxt "#30009"
+msgid "True"
+msgstr "True"
