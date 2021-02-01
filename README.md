@@ -19,6 +19,8 @@ files_extracted, success_of_extraction = my_archive.extract(files_to_extract=fil
 ```
 Additional functions:
 ```
+my_archive = archive_tool.archive_tool(archive_file = 'myfile.zip',directory_out = '/my/output_directory/', flatten_archive=True) #Flatten files when copying from archive, removing folder structure (default is False)
+
 my_archive.archive_file('myfile2.zip') #Updates the currently set archive
 
 my_archive.directory_out('/my/output_directory2/') #Updates the currently set output directory
