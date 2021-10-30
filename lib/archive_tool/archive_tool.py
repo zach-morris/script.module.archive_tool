@@ -182,7 +182,11 @@ class archive_tool(object):
 				directory_to = os.path.join(os.path.split(xbmcvfs.translatePath(current_archive_file))[0],'')
 			else:
 				directory_to = os.path.join(xbmcvfs.translatePath(current_directory_out),'')
-			
+			if not xbmcvfs.exists(directory_to):
+				if xbmcvfs.mkdir(directory_to):
+					xbmc.log(msg='archive_tool:  Requested extraction directory %(dd)s created' % {'dd': directory_to}, level=xbmc.LOGDEBUG)
+				else:
+					xbmc.log(msg='archive_tool:  Requested extraction directory %(dd)s failed to be created, extraction may fail' % {'dd': directory_to}, level=xbmc.LOGERROR)
 			if 'archive://' in current_archive_file or 'rar://' in current_archive_file:
 				archive_path = current_archive_file
 			else:
